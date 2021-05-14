@@ -72,12 +72,13 @@ def listing(request):
         listing_description = request.GET.get("listing_description")
         listing_bid = request.GET.get("listing_bid")
         listing_category = request.GET.get("listing_category")
-        # TODO listing_url = request.GET.get("listing_url")
+        img_url = request.GET.get("img_url")
         # Save listing object
         l = Listing(title=listing_title, 
                     description=listing_description, 
                     bid=listing_bid, 
-                    category=listing_category)
+                    category=listing_category,
+                    img_url=img_url)
         l.save()
         return HttpResponseRedirect(reverse("index"))
     return render(request, "auctions/listing.html")

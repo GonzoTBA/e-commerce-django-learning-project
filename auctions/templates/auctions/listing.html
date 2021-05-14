@@ -3,6 +3,7 @@
 {% block body %}
     <h1>New listing</h1>
     <form class="col-4 method="GET">
+        {% csrf_token %}
         <div class="form-group">
             <input class="form-control" type="text" name="listing_title" placeholder="Listing title">
         </div>
@@ -14,6 +15,9 @@
         </div>
         <div class="form-group">
             <input class="form-control" type="text" name="listing_category" placeholder="Listing category">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="img_url" placeholder="Listing image url">
         </div>
 
         <button class="btn btn-primary" type="submit" name="listing">Submit</button>
