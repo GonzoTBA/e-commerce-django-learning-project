@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1>New listing</h1>
+    <form class="col-4 method="GET">
+        <div class="form-group">
+            <input class="form-control" type="text" name="listing_title" placeholder="Listing title">
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" name="listing_description" placeholder="Listing description" rows="5" cols="50"></textarea>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="number" step="0.01" name="listing_bid" placeholder="Listing minimum bid">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="listing_category" placeholder="Listing category">
+        </div>
+
+        <button class="btn btn-primary" type="submit" name="listing">Submit</button>
+    </form>
+{% endblock %}

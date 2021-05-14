@@ -3,5 +3,12 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    <ul>
+    {% for listing in listings %}
+        <li>
+            <h3>{{ listing.title }}</h3>
+            Highest bid: {{ listing.bid }}
+        </li>
+    {% endfor %}
+    </ul>
 {% endblock %}
