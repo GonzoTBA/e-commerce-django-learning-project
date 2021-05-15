@@ -6,12 +6,14 @@
 
     <ul style="list-style-type:none;">
     {% for listing in listings %}
-        <li>
+        <li class="p-4">
             <h3>{{ listing.title }}</h3>
-            <p>Highest bid: {{ listing.bid }}</p>
+            <p>{{ listing.description }}</p>
+            <p>Price: {{ listing.bid }}</p>
             {% if listing.img_url %}
                 <p><img src="{{ listing.img_url }}" width="300px"></p>
             {% endif %}
+            <a href="{% url 'listing-view' listing.id %}">Go to this listing</a>
         </li>
     {% endfor %}
     </ul>

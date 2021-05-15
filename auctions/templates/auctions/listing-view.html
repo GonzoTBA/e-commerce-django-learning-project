@@ -1,0 +1,13 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1>{{ listing.title }}</h1>
+    <p>{{ listing.description }}</p>
+    <p>Price: {{ listing.bid }}</p>
+    {% if listing.img_url %}
+        <p><img src="{{ listing.img_url }}" width="300px"></p>
+    {% endif %}
+    {% if user.is_authenticated %}
+      <a href="{% url 'watchlist' user.id 'add' listing.id%}">Add to Watchlist</a> 
+    {% endif %}
+{% endblock %}

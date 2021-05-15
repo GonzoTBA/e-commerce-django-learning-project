@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .models import User, Listing
+from .models import User, Listing, UsersListings
 
 
 def index(request):
@@ -82,3 +82,30 @@ def listing(request):
         l.save()
         return HttpResponseRedirect(reverse("index"))
     return render(request, "auctions/listing.html")
+
+def listing_view(response, listing_id):
+    """
+    Prepares listing view
+    """
+    listing = Listing.objects.get(id=listing_id)
+    return render(response, "auctions/listing-view.html", {
+        "listing": listing
+    })
+    pass
+
+def watchlist(response, user_id, action, listing_id):
+    """
+    Admins the watchlist
+    """
+    user = User.objects.get(id=user_id)
+    listing = Listing.objects.get(id=listing_id)
+    if action == "add":
+        ul = UsersListings(user_id=user.id, listing_id=listing.id)
+        ul.get_or_create()
+    user_listings = UsersListings.objects.filter(user_id=user_id)
+    listings = []
+    for users_listing in user_listings:
+        listings.append(Listing.objects.get(id=users_listing.listing_id)) 
+    return render(response, "auctions/watchlist.html", {
+        "listings": listings
+    })
