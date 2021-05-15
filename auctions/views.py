@@ -93,7 +93,7 @@ def listing_view(response, listing_id):
     })
     pass
 
-def watchlist(response, user_id, action, listing_id):
+def admin_watchlist(response, user_id, action, listing_id):
     """
     Admins the watchlist
     """
@@ -101,7 +101,12 @@ def watchlist(response, user_id, action, listing_id):
     listing = Listing.objects.get(id=listing_id)
     if action == "add":
         ul = UsersListings(user_id=user.id, listing_id=listing.id)
-        ul.get_or_create()
+        # TODO: Add only if not present
+        ul.save()
+    watchlist(response, user_id)
+    return HttpResponseRedirect(reverse('watchlist', args=(user_id,)))
+
+def watchlist(response, user_id):
     user_listings = UsersListings.objects.filter(user_id=user_id)
     listings = []
     for users_listing in user_listings:
