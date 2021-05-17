@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.sessions.models import Session
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -83,13 +84,23 @@ def listing(request):
         return HttpResponseRedirect(reverse("index"))
     return render(request, "auctions/listing.html")
 
-def listing_view(response, listing_id):
+def listing_view(request, listing_id):
     """
     Prepares listing view
     """
+    # Get the user
+    if request.user.is_authenticated:
+        user = request.user
+    # Get listing
     listing = Listing.objects.get(id=listing_id)
-    return render(response, "auctions/listing-view.html", {
-        "listing": listing
+    # Check if listing is in watchlist
+    listing_in_watchlist = True
+    query = UsersListings.objects.filter(user_id=user.id, listing_id=listing.id)
+    if not query:
+        listing_in_watchlist = False
+    return render(request, "auctions/listing-view.html", {
+        "listing": listing,
+        "listing_in_watchlist": listing_in_watchlist
     })
     pass
 
@@ -99,11 +110,14 @@ def admin_watchlist(response, user_id, action, listing_id):
     """
     user = User.objects.get(id=user_id)
     listing = Listing.objects.get(id=listing_id)
+    # Add to watchlist
     if action == "add":
-        ul = UsersListings(user_id=user.id, listing_id=listing.id)
         # TODO: Add only if not present
-        ul.save()
-    watchlist(response, user_id)
+        UsersListings(user_id=user.id, listing_id=listing.id).save()
+    # Remove from Watchlist
+    if action == "remove":
+        UsersListings.objects.filter(user_id=user.id, listing_id=listing.id).delete()
+    # watchlist(response, user_id)
     return HttpResponseRedirect(reverse('watchlist', args=(user_id,)))
 
 def watchlist(response, user_id):
@@ -114,3 +128,7 @@ def watchlist(response, user_id):
     return render(response, "auctions/watchlist.html", {
         "listings": listings
     })
+
+def bid(request, price, bid):
+    if bid < price:
+        print("ERROR")
