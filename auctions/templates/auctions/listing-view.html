@@ -15,12 +15,20 @@
         <a class="row" href="{% url 'admin_watchlist' user.id 'add' listing.id %}">Add to Watchlist</a>
       {% endif %}
     </div>
-    <div class="row pt-5">
-      <form class="col-4" action="{% url 'bid' price bid %}" method="POST">
-        {% csrf_token %}
-        <input type="number" step="0.01" name="bid" placeholder="Enter your bid">
-        <input class="btn btn-primary" type="submit" value="Submit"> 
-      </form>
+    <div class="container-fluid pt-5">
+      {% if error %}
+        <div class="row">
+            <p class="alert alert-danger">Error: Your bid must be greater than the highest bid</p>
+        </div>
+      {% endif %}
+      <div class="row">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="number" step="0.01" name="bid" placeholder="Enter your bid">
+          <input class="btn btn-primary" type="submit" value="Submit"> 
+          <input type="hidden" name="price" value="{{ listing.bid }}">
+        </form>
+      </div>
     </div>
     {% endif %}
 {% endblock %}

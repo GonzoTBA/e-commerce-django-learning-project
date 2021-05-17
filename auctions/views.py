@@ -86,7 +86,7 @@ def listing(request):
 
 def listing_view(request, listing_id):
     """
-    Prepares listing view
+    Prepares listing view and also checks and accepts new bids
     """
     # Get the user
     if request.user.is_authenticated:
@@ -98,6 +98,23 @@ def listing_view(request, listing_id):
     query = UsersListings.objects.filter(user_id=user.id, listing_id=listing.id)
     if not query:
         listing_in_watchlist = False
+
+    # Bid admin
+    if request.method == "POST":
+        # Validate the bid
+        bid = int(float(request.POST.get("bid")))
+        price = int(float(request.POST.get("price")))
+        if bid < price:
+            error = "Bid must be greater than highest price"
+            return render(request, "auctions/listing-view.html", {
+                "error": error,
+                "listing": listing,
+                "listing_in_watchlist": listing_in_watchlist
+            })
+        else:
+            # Save bid for the listing as highest bid
+            pass
+
     return render(request, "auctions/listing-view.html", {
         "listing": listing,
         "listing_in_watchlist": listing_in_watchlist
@@ -128,7 +145,3 @@ def watchlist(response, user_id):
     return render(response, "auctions/watchlist.html", {
         "listings": listings
     })
-
-def bid(request, price, bid):
-    if bid < price:
-        print("ERROR")

@@ -13,6 +13,7 @@ class Listing(models.Model):
     num_bids = models.IntegerField(null=True)
     category = models.CharField(max_length=64, null=True)
     img_url = models.CharField(max_length=64, null=True)
+    highest_bid = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Bid(models.Model):
     bid_owner_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid_owners")
