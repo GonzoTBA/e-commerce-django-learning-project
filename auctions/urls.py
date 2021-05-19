@@ -11,4 +11,5 @@ urlpatterns = [
     path("listing-view/<int:listing_id>", views.listing_view, name="listing-view"),
     path("admin_watchlist/<int:user_id>/<str:action>/<int:listing_id>", views.admin_watchlist, name="admin_watchlist"),
     path("watchlist/<int:user_id>", views.watchlist, name="watchlist"),
+    path("close/<int:listing_id>/<int:highest_bidder_id>", views.close, name="close"),
 ]

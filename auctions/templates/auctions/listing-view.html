@@ -29,6 +29,17 @@
           <input type="hidden" name="price" value="{{ listing.bid }}">
         </form>
       </div>
+      <div class="row pt-3">
+        {% if user_is_listing_owner and is_open %}
+          <a href="{% url 'close' listing.id listing.highest_bidder_id %}">Close listing</a>
+        {% endif %}
+      </div>
     </div>
+    <div class="pt-5">
+      {% if user.id == listing.winner_id and not is_open %}
+        <h2>You have won the bid for this listing!</h2>
+      {% endif %}
+    </div>
+
     {% endif %}
 {% endblock %}

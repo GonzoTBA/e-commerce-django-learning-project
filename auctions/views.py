@@ -104,7 +104,7 @@ def listing_view(request, listing_id):
         # Validate the bid
         bid = int(float(request.POST.get("bid")))
         price = int(float(request.POST.get("price")))
-        if bid < price:
+        if bid <= price:
             error = "Bid must be greater than highest price"
             return render(request, "auctions/listing-view.html", {
                 "error": error,
@@ -113,13 +113,20 @@ def listing_view(request, listing_id):
             })
         else:
             # Save bid for the listing as highest bid
-            pass
+            listing.bid = bid
+            listing.highest_bidder_id = user.id
+            listing.save()
+
+    # User is listing owner
+    user_is_listing_owner = False
+    if user.id == listing.owner_id:
+        user_is_listing_owner = True
 
     return render(request, "auctions/listing-view.html", {
         "listing": listing,
-        "listing_in_watchlist": listing_in_watchlist
+        "listing_in_watchlist": listing_in_watchlist,
+        "user_is_listing_owner": user_is_listing_owner
     })
-    pass
 
 def admin_watchlist(response, user_id, action, listing_id):
     """
@@ -145,3 +152,11 @@ def watchlist(response, user_id):
     return render(response, "auctions/watchlist.html", {
         "listings": listings
     })
+
+def close(request, listing_id, highest_bidder_id):
+    """
+    Closes the listing and tells the winner
+    """
+    l = Listing.objects.filter(id=listing_id)
+    l.update(winner_id = highest_bidder_id, is_open = False)
+    return listing_view(request, listing_id)
