@@ -30,13 +30,22 @@
         </form>
       </div>
       <div class="row pt-3">
-        {% if user_is_listing_owner and is_open %}
+        {% if user_is_listing_owner and listing.is_open %}
           <a href="{% url 'close' listing.id listing.highest_bidder_id %}">Close listing</a>
         {% endif %}
       </div>
+      <div class="row pt-4">
+        <form action="{% url 'add_comment' %}" method="POST">
+          {% csrf_token %}
+          <textarea placeholder="You may enter a comment" rows="5" cols="20" name="comment_text"></textarea>
+          <input type="hidden" name="owner_id" value="{{ user.id }}">
+          <input type="hidden" name="listing_id" value="{{ listing.id }}">
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
     </div>
+
     <div class="pt-5">
-      {% if user.id == listing.winner_id and not is_open %}
+      {% if user.id == listing.winner_id and not listing.is_open %}
         <h2>You have won the bid for this listing!</h2>
       {% endif %}
     </div>

@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .models import User, Listing, UsersListings
+from .models import Comment, User, Listing, UsersListings
 
 
 def index(request):
@@ -74,12 +74,16 @@ def listing(request):
         listing_bid = request.GET.get("listing_bid")
         listing_category = request.GET.get("listing_category")
         img_url = request.GET.get("img_url")
+        user = request.user
         # Save listing object
         l = Listing(title=listing_title, 
                     description=listing_description, 
                     bid=listing_bid, 
                     category=listing_category,
-                    img_url=img_url)
+                    img_url=img_url,
+                    highest_bidder_id=user.id,
+                    is_open=True,
+                    owner_id=user.id)
         l.save()
         return HttpResponseRedirect(reverse("index"))
     return render(request, "auctions/listing.html")
@@ -100,7 +104,7 @@ def listing_view(request, listing_id):
         listing_in_watchlist = False
 
     # Bid admin
-    if request.method == "POST":
+    if request.method == "POST" and request.POST.get('bid'):
         # Validate the bid
         bid = int(float(request.POST.get("bid")))
         price = int(float(request.POST.get("price")))
@@ -121,6 +125,9 @@ def listing_view(request, listing_id):
     user_is_listing_owner = False
     if user.id == listing.owner_id:
         user_is_listing_owner = True
+
+    print(user_is_listing_owner)
+    print(listing.is_open)
 
     return render(request, "auctions/listing-view.html", {
         "listing": listing,
@@ -160,3 +167,17 @@ def close(request, listing_id, highest_bidder_id):
     l = Listing.objects.filter(id=listing_id)
     l.update(winner_id = highest_bidder_id, is_open = False)
     return listing_view(request, listing_id)
+
+def add_comment(request):
+    """
+    Adds a new comment to the listing
+    """
+    if request.method == "POST":
+        c = Comment()
+        c.text = request.POST.get("comment_text")
+        c.listing_id = request.POST.get("listing_id")
+        c.owner_id = request.POST.get("owner_id")
+        c.save()
+        print(c.listing_id)
+        listing_id = c.listing_id
+        return listing_view(request, listing_id)

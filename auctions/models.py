@@ -23,9 +23,14 @@ class Bid(models.Model):
     bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Comment(models.Model):
-    comment = models.CharField(max_length=512)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    text = models.CharField(max_length=512)
+    listing_id = models.IntegerField(null=False)
+    owner_id = models.IntegerField(null=False)
 
 class UsersListings(models.Model):
     user_id = models.IntegerField(null=False)
     listing_id = models.IntegerField(null=False)
+
+class ListingsComments(models.Model):
+    listing_id = models.IntegerField(null=False)
+    comment_id = models.IntegerField(null=False)
