@@ -126,13 +126,17 @@ def listing_view(request, listing_id):
     if user.id == listing.owner_id:
         user_is_listing_owner = True
 
-    print(user_is_listing_owner)
-    print(listing.is_open)
+    # Prepare comments
+    comments_list = []
+    comments = Comment.objects.filter(listing_id=listing.id)
+    for comment in comments:
+        comments_list.append(comment)
 
     return render(request, "auctions/listing-view.html", {
         "listing": listing,
         "listing_in_watchlist": listing_in_watchlist,
-        "user_is_listing_owner": user_is_listing_owner
+        "user_is_listing_owner": user_is_listing_owner,
+        "comments_list": comments_list
     })
 
 def admin_watchlist(response, user_id, action, listing_id):

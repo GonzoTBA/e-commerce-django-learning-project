@@ -43,6 +43,14 @@
           <button class="btn btn-primary" type="submit">Submit</button>
         </form>
     </div>
+    <div class="row pt-4">
+      <h2>Comments:</h2>
+      <ul>
+        {% for comment in comments_list %}
+          <li>{{ comment.text }}</li>
+        {% endfor %}
+      </ul>
+    </div>
 
     <div class="pt-5">
       {% if user.id == listing.winner_id and not listing.is_open %}
