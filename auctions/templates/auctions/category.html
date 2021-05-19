@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h2>Listings per category "{{ category }}"</h2>
+
+    <ul style="list-style-type:none;">
+    {% for listing in category_listings %}
+        <li class="p-4">
+            <a href="{% url 'listing-view' listing.id %}">{{ listing.title }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

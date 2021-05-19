@@ -185,3 +185,24 @@ def add_comment(request):
         print(c.listing_id)
         listing_id = c.listing_id
         return listing_view(request, listing_id)
+
+def categories(request):
+    """
+    Show a list of all categories
+    """
+    categories_list = Listing.objects.values('category').distinct()
+
+    return render(request, "auctions/categories.html", {
+        "categories_list": categories_list
+    })
+
+def show_category(request, category):
+    """
+    Shows all listings for a category
+    """
+    category_listings = Listing.objects.filter(category=category)
+
+    return render(request, 'auctions/category.html', {
+        "category_listings": category_listings,
+        "category": category
+    })
